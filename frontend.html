@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LaTeX Document Generator</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --danger-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --dark-bg: #0f0f23;
+            --card-bg: #1a1a2e;
+            --surface: #16213e;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --border: #2a2a40;
+            --shadow: 0 10px 40px rgba(0,0,0,0.3);
+            --radius: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 60px 20px;
+            background: var(--primary-gradient);
+            border-radius: var(--radius);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--text-primary);
+        }
+
+        .card-title i {
+            width: 24px;
+            text-align: center;
+            opacity: 0.8;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 15px 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--secondary-gradient);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success-gradient);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger-gradient);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--surface);
+            border-color: #667eea;
+        }
+
+        .section-container {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .section-container:hover {
+            border-color: #667eea;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .table-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+            border: 1px solid var(--border);
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .file-list {
+            max-height: 400px;
+            overflow-y: auto;
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: var(--card-bg);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .file-item:hover {
+            transform: translateX(5px);
+            border-color: #667eea;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-gradient);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 12px;
+            border-radius: 8px;
+        }
+
+        .status-message {
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .status-success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .status-error {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 15, 35, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .loading-content {
+            text-align: center;
+            padding: 40px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+        }
+
+        .pdf-insert-item {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .pdf-insert-item:hover {
+            border-color: #667eea;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-file-alt"></i> LaTeX Studio</h1>
+            <p>Professional document generation with modern tools</p>
+        </div>
+        
+        <div id="status"></div>
+        
+        <div class="main-grid">
+            <!-- Document Creation -->
+            <div class="card fade-in">
+                <h2 class="card-title">
+                    <i class="fas fa-plus-circle"></i>
+                    Create Document
+                </h2>
+                
+                <form id="documentForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="title"><i class="fas fa-heading"></i> Document Title</label>
+                            <input type="text" id="title" name="title" placeholder="Enter document title" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="author"><i class="fas fa-user"></i> Author</label>
+                            <input type="text" id="author" name="author" placeholder="Enter author name" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="filename"><i class="fas fa-file-signature"></i> Custom Filename (Optional)</label>
+                        <input type="text" id="filename" name="filename" placeholder="e.g., my-research-paper (without extension)">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-paperclip"></i> PDF Files & Insertion Positions</label>
+                        <div id="pdfInserts">
+                            <div class="pdf-insert-item">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <input type="file" class="pdf-file" accept=".pdf" onchange="updatePdfInsert(this)">
+                                    </div>
+                                                            <div class="form-group">
+                            <select class="pdf-position" onchange="updatePdfInsert(this)">
+                                <option value="">Insert at end</option>
+                            </select>
+                        </div>
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-danger btn-small" onclick="removePdfInsert(this)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline btn-small" onclick="addPdfInsert()">
+                            <i class="fas fa-plus"></i> Add Another PDF
+                        </button>
+                    </div>
+                    
+                    <div id="chapters">
+                        <label><i class="fas fa-book"></i> Document Structure</label>
+                        <div class="section-container">
+                            <div class="section-header">
+                                <div class="section-title">
+                                    <i class="fas fa-bookmark"></i> Chapter 1
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="chapter-title" placeholder="Chapter title" required>
+                            </div>
+                            <div class="sections">
+                                <div class="section-container">
+                                    <div class="section-header-title">
+                                        <i class="fas fa-paragraph"></i> Section
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" class="section-title-input" placeholder="Section title" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <textarea class="section-content" placeholder="Section content..."></textarea>
+                                    </div>
+                                    <div class="tables">
+                                        <button type="button" class="btn btn-outline btn-small" onclick="addTable(this)">
+                                            <i class="fas fa-table"></i> Add Table
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-secondary btn-small" onclick="addSection(this)">
+                                <i class="fas fa-plus"></i> Add Section
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 30px;">
+                        <button type="button" class="btn btn-secondary" onclick="addChapter()">
+                            <i class="fas fa-plus"></i> Add Chapter
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-rocket"></i> Create Document
+                        </button>
+                        <button type="button" class="btn btn-success" onclick="createExample()">
+                            <i class="fas fa-magic"></i> Create Example
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- File Management -->
+            <div class="card fade-in">
+                <h2 class="card-title">
+                    <i class="fas fa-folder-open"></i>
+                    File Manager
+                </h2>
+                
+                <button class="btn btn-outline" onclick="loadDocuments()">
+                    <i class="fas fa-sync-alt"></i> Refresh Files
+                </button>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-file-code"></i> LaTeX Documents</label>
+                    <div id="documentsList" class="file-list">
+                        <div class="empty-state">
+                            <i class="fas fa-file-alt"></i>
+                            <p>Click "Refresh Files" to load documents</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-file-pdf"></i> Generated PDFs</label>
+                    <div id="pdfsList" class="file-list">
+                        <div class="empty-state">
+                            <i class="fas fa-file-pdf"></i>
+                            <p>No PDFs generated yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <h3>Processing your request...</h3>
+            <p>Please wait while we work our magic</p>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000/latex';
+
+        function showStatus(message, type = 'success') {
+            const status = document.getElementById('status');
+            const icon = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-triangle';
+            status.className = `status-message status-${type}`;
+            status.innerHTML = `<i class="${icon}"></i>${message}`;
+            
+            // Console log for debugging
+            console.log(`[${type.toUpperCase()}] ${message}`);
+            
+            setTimeout(() => {
+                status.innerHTML = '';
+                status.className = '';
+            }, 5000);
+        }
+
+        function showLoading(show = true) {
+            document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
+        }
+
+        function addChapter() {
+            const chaptersDiv = document.getElementById('chapters');
+            const chapterCount = chaptersDiv.querySelectorAll('.section-container').length + 1;
+            const chapterDiv = document.createElement('div');
+            chapterDiv.className = 'section-container fade-in';
+            chapterDiv.innerHTML = `
+                <div class="section-header">
+                    <div class="section-title">
+                        <i class="fas fa-bookmark"></i> Chapter ${chapterCount}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="chapter-title" placeholder="Chapter title" required>
+                </div>
+                <div class="sections">
+                                         <div class="section-container">
+                         <div class="section-header-title">
+                             <i class="fas fa-paragraph"></i> Section
+                         </div>
+                         <div class="form-group">
+                             <input type="text" class="section-title-input" placeholder="Section title" required>
+                         </div>
+                        <div class="form-group">
+                            <textarea class="section-content" placeholder="Section content..."></textarea>
+                        </div>
+                        <div class="tables">
+                            <button type="button" class="btn btn-outline btn-small" onclick="addTable(this)">
+                                <i class="fas fa-table"></i> Add Table
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-secondary btn-small" onclick="addSection(this)">
+                    <i class="fas fa-plus"></i> Add Section
+                </button>
+                <button type="button" class="btn btn-danger btn-small" onclick="removeChapter(this)">
+                    <i class="fas fa-trash"></i> Remove Chapter
+                </button>
+            `;
+            chaptersDiv.appendChild(chapterDiv);
+            updatePdfInsertOptions();
+        }
+
+        function removeChapter(button) {
+            button.closest('.section-container').remove();
+            updatePdfInsertOptions();
+        }
+
+        function addSection(button) {
+            const sectionsDiv = button.previousElementSibling;
+            const sectionDiv = document.createElement('div');
+                         sectionDiv.className = 'section-container fade-in';
+             sectionDiv.innerHTML = `
+                 <div class="section-header-title">
+                     <i class="fas fa-paragraph"></i> Section
+                 </div>
+                 <div class="form-group">
+                     <input type="text" class="section-title-input" placeholder="Section title" required>
+                 </div>
+                <div class="form-group">
+                    <textarea class="section-content" placeholder="Section content..."></textarea>
+                </div>
+                <div class="tables">
+                    <button type="button" class="btn btn-outline btn-small" onclick="addTable(this)">
+                        <i class="fas fa-table"></i> Add Table
+                    </button>
+                </div>
+                <button type="button" class="btn btn-danger btn-small" onclick="removeSection(this)">
+                    <i class="fas fa-trash"></i> Remove Section
+                </button>
+            `;
+            sectionsDiv.appendChild(sectionDiv);
+        }
+
+        function removeSection(button) {
+            button.closest('.section-container').remove();
+        }
+
+        function addTable(button) {
+            const tablesDiv = button.parentElement;
+            const tableDiv = document.createElement('div');
+            tableDiv.className = 'table-container fade-in';
+            tableDiv.innerHTML = `
+                <div class="form-group">
+                    <label><i class="fas fa-tag"></i> Table Caption</label>
+                    <input type="text" class="table-caption" placeholder="Table caption" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-columns"></i> Headers (comma-separated)</label>
+                    <input type="text" class="table-headers" placeholder="Name, Age, City" required>
+                </div>
+                <div class="table-rows">
+                    <label><i class="fas fa-list"></i> Rows</label>
+                    <div class="table-row">
+                        <input type="text" placeholder="Column 1">
+                        <input type="text" placeholder="Column 2">
+                        <input type="text" placeholder="Column 3">
+                    </div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <button type="button" class="btn btn-outline btn-small" onclick="addTableRow(this)">
+                        <i class="fas fa-plus"></i> Add Row
+                    </button>
+                    <button type="button" class="btn btn-danger btn-small" onclick="removeTable(this)">
+                        <i class="fas fa-trash"></i> Remove Table
+                    </button>
+                </div>
+            `;
+            tablesDiv.appendChild(tableDiv);
+        }
+
+        function removeTable(button) {
+            button.closest('.table-container').remove();
+        }
+
+        function addTableRow(button) {
+            const rowsDiv = button.closest('.table-container').querySelector('.table-rows');
+            const newRow = document.createElement('div');
+            newRow.className = 'table-row fade-in';
+            newRow.innerHTML = `
+                <input type="text" placeholder="Column 1">
+                <input type="text" placeholder="Column 2">
+                <input type="text" placeholder="Column 3">
+            `;
+            rowsDiv.appendChild(newRow);
+        }
+
+        function collectFormData() {
+            const title = document.getElementById('title').value.trim();
+            const author = document.getElementById('author').value.trim();
+            const filename = document.getElementById('filename').value.trim();
+            
+            console.log('Form Data Collection:');
+            console.log('Title:', title);
+            console.log('Author:', author);
+            console.log('Filename:', filename);
+            
+            const chapters = [];
+            const chapterElements = document.querySelectorAll('#chapters > .section-container');
+            console.log('Found chapter elements:', chapterElements.length);
+            
+            chapterElements.forEach((chapterDiv, chapterIndex) => {
+                const chapterTitleInput = chapterDiv.querySelector('.chapter-title');
+                const chapterTitle = chapterTitleInput ? chapterTitleInput.value.trim() : '';
+                console.log(`Chapter ${chapterIndex + 1} title:`, chapterTitle);
+                
+                const sections = [];
+                const sectionElements = chapterDiv.querySelectorAll('.sections .section-container');
+                console.log(`Chapter ${chapterIndex + 1} sections found:`, sectionElements.length);
+                
+                sectionElements.forEach((sectionDiv, sectionIndex) => {
+                    const sectionTitleInput = sectionDiv.querySelector('.section-title-input');
+                    const sectionContentInput = sectionDiv.querySelector('.section-content');
+                    
+                    const sectionTitle = sectionTitleInput ? sectionTitleInput.value.trim() : '';
+                    const sectionContent = sectionContentInput ? sectionContentInput.value.trim() : '';
+                    
+                    console.log(`Section ${sectionIndex + 1} title:`, sectionTitle);
+                    console.log(`Section ${sectionIndex + 1} content:`, sectionContent);
+                    
+                    const tables = [];
+                    const tableElements = sectionDiv.querySelectorAll('.table-container');
+                    console.log(`Section ${sectionIndex + 1} tables found:`, tableElements.length);
+                    
+                    tableElements.forEach((tableDiv, tableIndex) => {
+                        const captionInput = tableDiv.querySelector('.table-caption');
+                        const headersInput = tableDiv.querySelector('.table-headers');
+                        
+                        const caption = captionInput ? captionInput.value.trim() : '';
+                        const headerString = headersInput ? headersInput.value.trim() : '';
+                        const headers = headerString ? headerString.split(',').map(h => h.trim()).filter(h => h !== '') : [];
+                        
+                        console.log(`Table ${tableIndex + 1} caption:`, caption);
+                        console.log(`Table ${tableIndex + 1} headers:`, headers);
+                        
+                        const rows = [];
+                        const rowElements = tableDiv.querySelectorAll('.table-row');
+                        
+                        rowElements.forEach((rowDiv, rowIndex) => {
+                            const rowInputs = rowDiv.querySelectorAll('input');
+                            const row = Array.from(rowInputs)
+                                .map(input => input.value.trim())
+                                .filter(val => val !== '');
+                            
+                            if (row.length > 0) {
+                                rows.push(row);
+                                console.log(`Table ${tableIndex + 1} row ${rowIndex + 1}:`, row);
+                            }
+                        });
+                        
+                        if (caption && headers.length > 0) {
+                            tables.push({ caption, headers, rows });
+                        }
+                    });
+                    
+                    // A section is valid if it has a title (content is optional)
+                    if (sectionTitle) {
+                        sections.push({
+                            title: sectionTitle,
+                            content: sectionContent || '', // Default to empty string if no content
+                            tables: tables.length > 0 ? tables : undefined
+                        });
+                    }
+                });
+                
+                // A chapter is valid if it has a title and at least one section
+                if (chapterTitle && sections.length > 0) {
+                    chapters.push({ title: chapterTitle, sections });
+                }
+            });
+            
+            const formData = { title, author, filename, chapters };
+            console.log('Final form data:', formData);
+            console.log('Validation checks:');
+            console.log('- Title valid:', !!title);
+            console.log('- Author valid:', !!author);
+            console.log('- Chapters count:', chapters.length);
+            console.log('- Chapters valid:', chapters.length > 0);
+            
+            return formData;
+        }
+
+        document.getElementById('documentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            console.log('Form submission started...');
+            
+            const formData = new FormData();
+            const documentData = collectFormData();
+            
+            console.log('Validating form data...');
+            console.log('Title check:', !documentData.title, 'Value:', documentData.title);
+            console.log('Author check:', !documentData.author, 'Value:', documentData.author);
+            console.log('Chapters check:', documentData.chapters.length === 0, 'Count:', documentData.chapters.length);
+            
+            if (!documentData.title || !documentData.author || documentData.chapters.length === 0) {
+                const errorMsg = 'Please fill in all required fields and add at least one chapter with one section.';
+                console.log('Validation failed:', errorMsg);
+                showStatus(errorMsg, 'error');
+                return;
+            }
+            
+            console.log('Validation passed, preparing form data...');
+            formData.append('title', documentData.title);
+            formData.append('author', documentData.author);
+            if (documentData.filename) {
+                formData.append('filename', documentData.filename);
+                console.log('Custom filename added:', documentData.filename);
+            }
+            formData.append('chapters', JSON.stringify(documentData.chapters));
+            
+            // Handle PDF inserts with positions
+            const pdfInserts = collectPdfInserts();
+            console.log('PDF inserts to process:', pdfInserts.length);
+            
+            if (pdfInserts.length > 0) {
+                // Add PDF insert data
+                const pdfInsertData = pdfInserts.map(insert => ({
+                    filename: insert.filename,
+                    insertAfterChapter: insert.insertAfterChapter
+                }));
+                formData.append('pdfInserts', JSON.stringify(pdfInsertData));
+                
+                // Add PDF files
+                pdfInserts.forEach(insert => {
+                    formData.append('files', insert.file);
+                    console.log('Added PDF file:', insert.filename, 'after chapter:', insert.insertAfterChapter);
+                });
+            }
+            
+            console.log('Sending request to API...');
+            showLoading(true);
+            
+            try {
+                const response = await fetch(`${API_BASE}/create-document`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                console.log('Response status:', response.status);
+                const result = await response.json();
+                console.log('Response data:', result);
+                
+                if (result.success) {
+                    const successMsg = `Document created successfully: ${result.filename}`;
+                    console.log('Success:', successMsg);
+                    showStatus(successMsg, 'success');
+                    loadDocuments();
+                } else {
+                    console.log('API error:', result.message);
+                    showStatus(result.message, 'error');
+                }
+            } catch (error) {
+                const errorMsg = `Error: ${error.message}`;
+                console.log('Network error:', error);
+                showStatus(errorMsg, 'error');
+            } finally {
+                showLoading(false);
+                console.log('Form submission completed.');
+            }
+        });
+
+        async function createExample() {
+            console.log('Creating example document...');
+            showLoading(true);
+            
+            try {
+                const response = await fetch(`${API_BASE}/example-document`, {
+                    method: 'POST'
+                });
+                
+                console.log('Example response status:', response.status);
+                const result = await response.json();
+                console.log('Example response data:', result);
+                
+                if (result.success) {
+                    const successMsg = `Example document created: ${result.filename}`;
+                    console.log('Example success:', successMsg);
+                    showStatus(successMsg, 'success');
+                    loadDocuments();
+                } else {
+                    console.log('Example error:', result.message);
+                    showStatus(result.message, 'error');
+                }
+            } catch (error) {
+                const errorMsg = `Error: ${error.message}`;
+                console.log('Example network error:', error);
+                showStatus(errorMsg, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function loadDocuments() {
+            console.log('Loading documents and PDFs...');
+            try {
+                const [docsResponse, pdfsResponse] = await Promise.all([
+                    fetch(`${API_BASE}/documents`),
+                    fetch(`${API_BASE}/pdfs`)
+                ]);
+                
+                console.log('Documents response status:', docsResponse.status);
+                console.log('PDFs response status:', pdfsResponse.status);
+                
+                const docsResult = await docsResponse.json();
+                const pdfsResult = await pdfsResponse.json();
+                
+                console.log('Documents result:', docsResult);
+                console.log('PDFs result:', pdfsResult);
+                
+                const docsList = document.getElementById('documentsList');
+                const pdfsList = document.getElementById('pdfsList');
+                
+                if (docsResult.success && docsResult.documents.length > 0) {
+                    docsList.innerHTML = docsResult.documents.map(doc => `
+                        <div class="file-item fade-in">
+                            <div class="file-info">
+                                <div class="file-icon">TEX</div>
+                                <span>${doc}</span>
+                            </div>
+                            <div class="file-actions">
+                                <button class="btn btn-primary btn-small" onclick="compileDocument('${doc}')">
+                                    <i class="fas fa-cogs"></i> Compile
+                                </button>
+                                <button class="btn btn-outline btn-small" onclick="viewDocument('${doc}')">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                                <button class="btn btn-danger btn-small" onclick="deleteDocument('${doc}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    docsList.innerHTML = '<div class="empty-state"><i class="fas fa-file-alt"></i><p>No documents found</p></div>';
+                }
+                
+                if (pdfsResult.success && pdfsResult.pdfs.length > 0) {
+                    pdfsList.innerHTML = pdfsResult.pdfs.map(pdf => `
+                        <div class="file-item fade-in">
+                            <div class="file-info">
+                                <div class="file-icon">PDF</div>
+                                <span>${pdf}</span>
+                            </div>
+                            <div class="file-actions">
+                                <button class="btn btn-success btn-small" onclick="downloadPdf('${pdf}')">
+                                    <i class="fas fa-download"></i> Download
+                                </button>
+                                <button class="btn btn-danger btn-small" onclick="deletePdf('${pdf}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    pdfsList.innerHTML = '<div class="empty-state"><i class="fas fa-file-pdf"></i><p>No PDFs found</p></div>';
+                }
+            } catch (error) {
+                showStatus(`Error loading files: ${error.message}`, 'error');
+            }
+        }
+
+        async function compileDocument(filename) {
+            console.log('Compiling document:', filename);
+            showLoading(true);
+            
+            try {
+                const response = await fetch(`${API_BASE}/compile/${filename}`, {
+                    method: 'POST'
+                });
+                
+                console.log('Compile response status:', response.status);
+                const result = await response.json();
+                console.log('Compile response data:', result);
+                
+                if (result.success) {
+                    const successMsg = `PDF compiled successfully: ${result.pdfFilename}`;
+                    console.log('Compile success:', successMsg);
+                    showStatus(successMsg, 'success');
+                    loadDocuments();
+                } else {
+                    console.log('Compile error:', result.message);
+                    showStatus(result.message, 'error');
+                }
+            } catch (error) {
+                const errorMsg = `Error compiling PDF: ${error.message}`;
+                console.log('Compile network error:', error);
+                showStatus(errorMsg, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function viewDocument(filename) {
+            try {
+                const response = await fetch(`${API_BASE}/document/${filename}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    const newWindow = window.open('', '_blank');
+                    newWindow.document.write(`
+                        <html>
+                            <head>
+                                <title>${filename}</title>
+                                <style>
+                                    body { 
+                                        font-family: 'Courier New', monospace; 
+                                        white-space: pre-wrap; 
+                                        padding: 20px; 
+                                        background: #1a1a2e; 
+                                        color: #ffffff; 
+                                        line-height: 1.4;
+                                    }
+                                </style>
+                            </head>
+                            <body>${result.content.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</body>
+                        </html>
+                    `);
+                } else {
+                    showStatus(result.message, 'error');
+                }
+            } catch (error) {
+                showStatus(`Error viewing document: ${error.message}`, 'error');
+            }
+        }
+
+        async function deleteDocument(filename) {
+            console.log('Delete document requested:', filename);
+            if (!confirm(`Are you sure you want to delete ${filename}?`)) {
+                console.log('Delete cancelled by user');
+                return;
+            }
+            
+            try {
+                console.log('Sending delete request...');
+                const response = await fetch(`${API_BASE}/delete-document/${filename}`, {
+                    method: 'POST'
+                });
+                
+                console.log('Delete response status:', response.status);
+                const result = await response.json();
+                console.log('Delete response data:', result);
+                
+                if (result.success) {
+                    const successMsg = `Document deleted: ${filename}`;
+                    console.log('Delete success:', successMsg);
+                    showStatus(successMsg, 'success');
+                    loadDocuments();
+                } else {
+                    console.log('Delete error:', result.message);
+                    showStatus(result.message, 'error');
+                }
+            } catch (error) {
+                const errorMsg = `Error deleting document: ${error.message}`;
+                console.log('Delete network error:', error);
+                showStatus(errorMsg, 'error');
+            }
+        }
+
+        async function deletePdf(filename) {
+            console.log('Delete PDF requested:', filename);
+            if (!confirm(`Are you sure you want to delete ${filename}?`)) {
+                console.log('PDF delete cancelled by user');
+                return;
+            }
+            
+            try {
+                console.log('Sending PDF delete request...');
+                const response = await fetch(`${API_BASE}/delete-pdf/${filename}`, {
+                    method: 'POST'
+                });
+                
+                console.log('PDF delete response status:', response.status);
+                const result = await response.json();
+                console.log('PDF delete response data:', result);
+                
+                if (result.success) {
+                    const successMsg = `PDF deleted: ${filename}`;
+                    console.log('PDF delete success:', successMsg);
+                    showStatus(successMsg, 'success');
+                    loadDocuments();
+                } else {
+                    console.log('PDF delete error:', result.message);
+                    showStatus(result.message, 'error');
+                }
+            } catch (error) {
+                const errorMsg = `Error deleting PDF: ${error.message}`;
+                console.log('PDF delete network error:', error);
+                showStatus(errorMsg, 'error');
+            }
+        }
+
+        function downloadPdf(filename) {
+            console.log('Downloading PDF:', filename);
+            window.open(`${API_BASE}/pdf/${filename}`, '_blank');
+        }
+
+        function addPdfInsert() {
+            const pdfInsertsDiv = document.getElementById('pdfInserts');
+            const pdfInsertItem = document.createElement('div');
+            pdfInsertItem.className = 'pdf-insert-item fade-in';
+            
+            // Get current chapter count
+            const chapterElements = document.querySelectorAll('#chapters > .section-container');
+            const chapterCount = chapterElements.length;
+            
+            let chapterOptions = '<option value="">Insert at end</option>';
+            for (let i = 1; i <= chapterCount; i++) {
+                chapterOptions += `<option value="chapter-${i}">After Chapter ${i}</option>`;
+            }
+            
+            pdfInsertItem.innerHTML = `
+                <div class="form-row">
+                    <div class="form-group">
+                        <input type="file" class="pdf-file" accept=".pdf" onchange="updatePdfInsert(this)">
+                    </div>
+                    <div class="form-group">
+                        <select class="pdf-position" onchange="updatePdfInsert(this)">
+                            ${chapterOptions}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-danger btn-small" onclick="removePdfInsert(this)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            pdfInsertsDiv.appendChild(pdfInsertItem);
+        }
+
+        function removePdfInsert(button) {
+            button.closest('.pdf-insert-item').remove();
+        }
+
+        function updatePdfInsert(element) {
+            // This function can be used for real-time validation or UI updates
+            const fileInput = element.closest('.pdf-insert-item').querySelector('.pdf-file');
+            const positionSelect = element.closest('.pdf-insert-item').querySelector('.pdf-position');
+            
+            if (fileInput.files.length > 0) {
+                console.log('PDF file selected:', fileInput.files[0].name);
+                console.log('Insertion position:', positionSelect.value);
+            }
+        }
+
+        function updatePdfInsertOptions() {
+            const chapterElements = document.querySelectorAll('#chapters > .section-container');
+            const chapterCount = chapterElements.length;
+            
+            // Update all PDF position selects
+            const positionSelects = document.querySelectorAll('.pdf-position');
+            positionSelects.forEach(select => {
+                const currentValue = select.value;
+                
+                // Clear existing options except "Insert at end"
+                select.innerHTML = '<option value="">Insert at end</option>';
+                
+                // Add chapter options based on actual chapters
+                for (let i = 1; i <= chapterCount; i++) {
+                    const option = document.createElement('option');
+                    option.value = `chapter-${i}`;
+                    option.textContent = `After Chapter ${i}`;
+                    select.appendChild(option);
+                }
+                
+                // Restore previous selection if it's still valid
+                if (currentValue && currentValue.startsWith('chapter-')) {
+                    const chapterNum = parseInt(currentValue.split('-')[1]);
+                    if (chapterNum <= chapterCount) {
+                        select.value = currentValue;
+                    }
+                }
+            });
+        }
+
+        function collectPdfInserts() {
+            const pdfInserts = [];
+            const pdfInsertItems = document.querySelectorAll('.pdf-insert-item');
+            
+            pdfInsertItems.forEach((item, index) => {
+                const fileInput = item.querySelector('.pdf-file');
+                const positionSelect = item.querySelector('.pdf-position');
+                
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    const position = positionSelect.value;
+                    
+                    const pdfInsert = {
+                        filename: file.name,
+                        file: file // Keep the file object for upload
+                    };
+                    
+                    if (position && position.startsWith('chapter-')) {
+                        const chapterNum = parseInt(position.split('-')[1]);
+                        pdfInsert.insertAfterChapter = chapterNum;
+                    }
+                    
+                    pdfInserts.push(pdfInsert);
+                    console.log(`PDF Insert ${index + 1}:`, pdfInsert);
+                }
+            });
+            
+            return pdfInserts;
+        }
+
+        // Load files on page load
+        window.addEventListener('load', () => {
+            loadDocuments();
+            updatePdfInsertOptions();
+        });
+    </script>
+</body>
+</html> 
